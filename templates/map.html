@@ -1,0 +1,122 @@
+<!-- templates/map.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta Tags and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell Tower Locator</title>
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-fullscreen/dist/leaflet.fullscreen.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Link to your custom stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+</head>
+<body>
+    <!-- Banner Section -->
+    <div id="banner">
+        <h1>Cell Tower Locator</h1>
+        <p>Find the nearest cell towers and their details based on your location!</p>
+    </div>
+
+    <!-- Instructions Section -->
+    <div id="instructions" class="controls-wrapper">
+        <h2>How to Use the Cell Tower Locator</h2>
+        <ol>
+            <li><strong>Use Current Location:</strong> Click the "Use Current Location" button to automatically center the map on your current geographical position. This leverages your device's location services for accurate placement.</li>            
+            <li><strong>Search by Location:</strong> Enter a city, state, or country in the "Location" field and click "Move Map by Location" to center the map on that specified area. This is useful for exploring towers in different regions without manual navigation.</li>           
+            <li><strong>Search by Coordinates:</strong> Input specific latitude and longitude values in the respective fields and click "Move Map by Coordinates" to navigate directly to those coordinates on the map. This feature is ideal for pinpointing exact locations.</li>           
+            <li><strong>Select Carrier:</strong> Choose a carrier from the dropdown menu to filter towers based on the selected network provider. This helps in identifying towers specific to a carrier's infrastructure.</li>            
+            <li><strong>Find Towers:</strong> After selecting a carrier and a location (either via current location, dropped marker, or search), click the "Search Towers" button to locate the nearest cell towers for the chosen carrier. The map will display markers representing each tower, and detailed information will be available upon interaction.</li>            
+            <li><strong>Broad Area Search:</strong> Click the "Broad Area Search" button to find all cell towers within a broader vicinity of your current location, regardless of the selected carrier. This provides a comprehensive view of tower distribution in a larger area.</li>
+            <li><strong>View Tower Details:</strong> Click on a tower marker on the map or an entry in the Tower Summary list to view detailed information about that tower, including its type, range, distance from the selected location, and signal quality. This helps in assessing the tower's specifications and performance.</li>            
+            <li><strong>Drop a Marker:</strong> Click anywhere on the map to drop a custom marker. This allows you to set a specific reference point for searching nearby towers, enhancing the precision of your search based on selected locations.</li>           
+            <li><strong>Filter Towers by Type:</strong> Use the "Filter by Tower Type" dropdown in the Tower Summary section to display towers of a specific type (e.g., LTE, NR, CDMA, GSM, UMTS). This feature aids in categorizing towers based on their technological standards.</li>            
+            <li><strong>Interacting with Tower Summary:</strong> The Tower Summary section at the bottom lists all the towers found based on your search criteria. Click on any entry in this list to automatically center the map on the corresponding tower marker and highlight its details. This seamless interaction bridges the map and list views for enhanced usability.</li>
+        </ol>
+        
+    </div>
+
+    <!-- Container for Controls and Map -->
+    <div id="container">
+        <div class="controls-wrapper">
+            <!-- Search by Location -->
+            <div class="control-group">
+                <label for="location-input">Location (City, State, Country)</label>
+                <input type="text" id="location-input" placeholder="Enter a city, state, or country">
+                <button id="move-map-btn">Move Map by Location</button>
+            </div>
+
+            <!-- Search by Coordinates -->
+            <div class="control-group">
+                <label for="lat-input">Coordinates (Latitude, Longitude)</label>
+                <input type="text" id="lat-input" placeholder="Latitude (e.g., 40.730610)">
+                <input type="text" id="lon-input" placeholder="Longitude (e.g., -73.935242)">
+                <button id="move-map-coords-btn">Move Map by Coordinates</button>
+            </div>
+                    <!-- Use Current Location Control Group -->
+            <div class="current-location-btn">
+                <button id="use-current-location-btn" class="current-location-btn">Use Current Location</button>
+            </div>
+
+            <!-- Carrier Selection and Tower Search -->
+            <div class="control-group">
+                <label for="carrier-dropdown">Select Carrier</label>
+                <select id="carrier-dropdown">
+                    <option value="" selected>Select carrier</option>
+                    <option value="Verizon">Verizon</option>
+                    <option value="Att">AT&T</option>
+                    <option value="Omnisim">Omnisim</option>
+                </select>
+                <button id="search-towers-btn" class="search-btn">Search Towers</button>
+                <button id="broad-area-search-btn" class="search-btn">Broad Area Search</button>
+            </div>
+        </div>
+
+        <!-- Map Display -->
+        <div id="map" style="height: 600px;"></div>
+
+        <!-- Tower Summary Section -->
+        <div id="tower-summary" class="tower-summary-container">
+            <h3>Tower Summary</h3>
+            
+            <!-- Filter by Tower Type -->
+            <label for="tower-filter">Filter by Tower Type:</label>
+            <select id="tower-filter">
+                <option value="all">All Towers</option>
+                <option value="LTE">LTE</option>
+                <option value="NR">NR</option>
+                <option value="CDMA">CDMA</option>
+                <option value="GSM">GSM</option>
+                <option value="UMTS">UMTS</option>
+            </select>
+            
+            <ul id="tower-list">
+                <!-- Dynamically populated list of towers will appear here -->
+            </ul>
+        </div>
+
+        <!-- Loading Icon -->
+        <div id="loading-icon" style="display: none;">
+            <img src="/static/images/loading.gif" alt="Loading..." />
+        </div>
+
+        <!-- Loading Bar -->
+        <div id="loading-bar" style="width: 100%; background-color: #ddd; border-radius: 5px; display: none;">
+            <div id="loading-progress" style="width: 0%; height: 10px; background-color: #007BFF; border-radius: 5px;"></div>
+        </div>
+
+        <!-- Coordinates Display -->
+        <div id="coords" class="coords">Latitude: --, Longitude: --</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-fullscreen/dist/leaflet.fullscreen.js"></script>
+    <!-- Include your custom script -->
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+</body>
+</html>
