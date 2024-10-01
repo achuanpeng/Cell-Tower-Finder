@@ -11,18 +11,25 @@ project/
 │       │   └── style.css         # CSS file (all styles)
 │       └── js/
 │           └── map.js            # JavaScript file (all map logic)
+│       ├── images/
+│       │   └── signal_good.png
+│       │   └── signal_great.png
+│       │   └── signal_low.png
+│       │   └── nr.png
+│       │   └── logo.png
+│       │   └── cdma.png
+│       │   └── gsm.png
+│       │   └── lte.png
+│       │   └── etc...
 ├── templates/
 │   └── map.html                  # HTML template (main page layout)
 ├── databases/                    # Folder for .gz data files (optional)
 │   └── towers/				   # Contain cell tower information separated by country's alpha 3 code
 │       └── USA.csv.gz
 │       └── SWV.csv.gz
+│       └── IND.csv.gz
 │       └── etc...
-│   ├── cell_tower.csv.gz         # Main database, previously searched only by gz 
 │   ├── mcc_att.csv               # All MCC when ATT Selected
 │   ├── mcc_omnisim.csv           # All MCC when OmniSim Selected
 │   ├── mcc_verizon.csv           # All MCC when Verizon Selected
-│   └── static/
 └── log.txt                       # Log file for application logs
-├── resources/
-│   └── images                    # New locations for all images
