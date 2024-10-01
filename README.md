@@ -17,7 +17,7 @@ In today's connected world, understanding the distribution and quality of cellul
 
 ### Demo Video
 
-<video src="github/media/showcase.mp4" autoplay loop muted width="700"></video>
+<img src="github/media/showcase.gif" width= "700"><img>
 
 ### Filtering by Carrier
 
